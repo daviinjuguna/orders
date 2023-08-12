@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order_app/const/const.dart';
+import 'package:order_app/domain/domain.dart';
 import 'package:order_app/presentation/presentation.dart';
 
 class AppView extends StatefulWidget {
@@ -27,10 +29,34 @@ class _AppViewState extends State<AppView> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _appRouter.config(),
-      theme: ThemeData.from(colorScheme: AppColors.light),
-      darkTheme: ThemeData.from(colorScheme: AppColors.dark),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<SplashBloc, UserEntity>(
+          listener: (context, state) {
+            switch (state.status) {
+              case AuthStatus.authenticated:
+                _appRouter.pushAndPopUntil(
+                  const HomeRoute(),
+                  predicate: (route) => false,
+                );
+                break;
+              case AuthStatus.unauthenticated:
+                _appRouter.pushAndPopUntil(
+                  const LoginRoute(),
+                  predicate: (route) => false,
+                );
+                break;
+              default:
+            }
+          },
+          child: Container(),
+        )
+      ],
+      child: MaterialApp.router(
+        routerConfig: _appRouter.config(),
+        theme: const AppUi().theme,
+        darkTheme: const DarkAppUi().theme,
+      ),
     );
   }
 }

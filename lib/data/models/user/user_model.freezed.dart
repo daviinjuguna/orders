@@ -14,11 +14,16 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+UserModel _$UserModelFromJson(Map<String, dynamic> json) {
+  return _UserModel.fromJson(json);
+}
+
 /// @nodoc
 mixin _$UserModel {
   String get uid => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $UserModelCopyWith<UserModel> get copyWith =>
       throw _privateConstructorUsedError;
@@ -99,9 +104,12 @@ class __$$_UserModelCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_UserModel implements _UserModel {
   _$_UserModel({required this.uid, this.email});
+
+  factory _$_UserModel.fromJson(Map<String, dynamic> json) =>
+      _$$_UserModelFromJson(json);
 
   @override
   final String uid;
@@ -122,6 +130,7 @@ class _$_UserModel implements _UserModel {
             (identical(other.email, email) || other.email == email));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, uid, email);
 
@@ -130,11 +139,21 @@ class _$_UserModel implements _UserModel {
   @pragma('vm:prefer-inline')
   _$$_UserModelCopyWith<_$_UserModel> get copyWith =>
       __$$_UserModelCopyWithImpl<_$_UserModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_UserModelToJson(
+      this,
+    );
+  }
 }
 
 abstract class _UserModel implements UserModel {
   factory _UserModel({required final String uid, final String? email}) =
       _$_UserModel;
+
+  factory _UserModel.fromJson(Map<String, dynamic> json) =
+      _$_UserModel.fromJson;
 
   @override
   String get uid;
