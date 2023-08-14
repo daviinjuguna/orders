@@ -44,6 +44,12 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.router.navigate(const ChatRoute());
+        },
+        child: const Icon(Icons.message_outlined),
+      ),
       appBarBuilder: (context, tabsRouter) => AppBar(
         title: const Text('Order App'),
         actions: [

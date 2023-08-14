@@ -27,7 +27,8 @@ class AppRouter extends _$AppRouter {
         ],
       ),
       AutoRoute(page: CartRoute.page, path: '/cart'),
-      AutoRoute(page: OrderRoute.page, path: '/order')
+      AutoRoute(page: OrderRoute.page, path: '/order'),
+      AutoRoute(page: ChatRoute.page, path: '/chat'),
     ];
   }
 }

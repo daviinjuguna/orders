@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
 import 'package:order_app/data/data.dart';
 import 'package:order_app/domain/domain.dart';
@@ -78,10 +79,43 @@ class ProductRepoImpl implements ProductRepo {
   Stream<Either<String, HomeDisplay>> watchHomeDisplay() async* {
     final productStream = _source.getProducts();
     final cartStream = _source.watchCart();
-    final stream =
-        Rx.combineLatest2(productStream, cartStream, (productList, cartModel) {
+    final orderStream = _source.watchOrders();
+    final stream = Rx.combineLatest3(productStream, cartStream, orderStream,
+        (productList, cartModel, orders) {
       final products =
           productList.map((e) => ProductEntity.fromModel(e)).toList();
+      // final orders = ordersModel.map((e) => OrderEntity.fromModel(e)).toList();
+
+      //sort products based on orders
+
+      products.sort((a, b) {
+        //sort by date
+        final orderADate = orders
+            .firstWhereOrNull((element) =>
+                element.products.any((element) => element.id == a.id))
+            ?.date;
+        final orderBDate = orders
+            .firstWhereOrNull((element) =>
+                element.products.any((element) => element.id == b.id))
+            ?.date;
+
+        if (orderADate != null && orderBDate != null) {
+          return orderBDate.compareTo(orderADate);
+        }
+        //sort by quantity
+        final productsA = orders
+            .map((e) => e.products)
+            .expand((e) => e)
+            .where((prod) => prod.id == a.id)
+            .length;
+        final productsB = orders
+            .map((e) => e.products)
+            .expand((e) => e)
+            .where((prod) => prod.id == b.id)
+            .length;
+        return productsB.compareTo(productsA);
+      });
+
       final cart = CartEntity.fromModel(cartModel);
       return HomeDisplay(cart: cart, products: products);
     });
